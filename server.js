@@ -2,17 +2,17 @@ const express = require(`express`);
 const path = require(`path`);
 const http = require(`http`);
 const socketIO = require(`socket.io`);
-const Users = require(`./utils/users`);
+const Users = require(`utils/users`);
 
 const users = new Users();
 
 const {generateMessage, generateLocationMessage} = require(`./utils/message`);
-const {isRealString} = require(`./utils/validation`);
+const {isRealString} = require(`utils/validation`);
 
 const port = process.env.PORT || 3000;
 const app = express();
 
-app.use(express.static(path.join(__dirname, `../public`)));
+app.use(express.static(path.join(__dirname, `public`)));
 const server = http.createServer(app);
 
 const io = socketIO(server);
@@ -30,11 +30,11 @@ io.on(`connection`, (socket) => {
     users.addUser(socket.id, params.name, params.room);
     io.to(params.room).emit(`updateUserList`, users.getUserList(params.room));
 
-    socket.emit(`newMessage`, generateMessage(`Admin`, `Welcome to the app chat`));
+    socket.emit(`newMessage`, generateMessage(`NabilBot`, `Welcome to the NabilChat!`));
 
     socket.broadcast
       .to(params.room)
-      .emit(`newMessage`, generateMessage(`Admin`, `${params.name} has joined`));
+      .emit(`newMessage`, generateMessage(`NabilBot`, `${params.name} has joined!`));
 
     return cb();
   });
